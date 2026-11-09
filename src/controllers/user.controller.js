@@ -10,9 +10,28 @@ class UserController {
     this.getAllUsers = this.getAllUsers.bind(this);
     this.getUserById = this.getUserById.bind(this);
     this.deleteUser = this.deleteUser.bind(this);
+    this.createUser = this.createUser.bind(this);
+    this.updateUserAdmin = this.updateUserAdmin.bind(this);
     this.getUsersByInterests = this.getUsersByInterests.bind(this);
     this.getUserWithPosts = this.getUserWithPosts.bind(this);
   }
+
+  createUser = asyncHandler(async (req, res) => {
+    const user = await this.userService.createUser(req.body);
+    return ApiResponse.success(res, {
+      statusCode: 201,
+      message: 'User created successfully',
+      data: user
+    });
+  });
+
+  updateUserAdmin = asyncHandler(async (req, res) => {
+    const user = await this.userService.updateUserAdmin(req.params.id, req.body);
+    return ApiResponse.success(res, {
+      message: 'User updated successfully',
+      data: user
+    });
+  });
 
   getProfile = asyncHandler(async (req, res) => {
     const user = await this.userService.getProfile(req.user._id);

@@ -9,7 +9,9 @@ const createAdminRoutes = (userController, noteController, authMiddleware) => {
 
   // User management (Admin)
   router.get('/users', userController.getAllUsers);
+  router.post('/users', userController.createUser);
   router.get('/users/:id', userController.getUserById);
+  router.put('/users/:id', userController.updateUserAdmin);
   router.delete('/users/:id', userController.deleteUser);
 
   // Note management (Admin)

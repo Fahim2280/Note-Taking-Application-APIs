@@ -7,7 +7,7 @@ const createUserRoutes = (userController, authMiddleware) => {
   router.use(authMiddleware.authenticate);
 
   // Scenario 1: Group users by interests with single aggregation & pagination
-  router.get('/by-interests', userController.getUsersByInterests);
+  router.get(['/by-interests', '/group-by-interests'], userController.getUsersByInterests);
 
   // Profile endpoints
   router.get('/profile', userController.getProfile);

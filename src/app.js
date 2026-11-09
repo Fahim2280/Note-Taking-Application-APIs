@@ -49,9 +49,9 @@ const createApp = () => {
     renderDocs
   );
 
-  // API v1 Routes
+  // API Routes (supports both /api/v1 and /api prefixes)
   const apiRouter = createApiRouter(container);
-  app.use('/api/v1', apiRouter);
+  app.use(['/api/v1', '/api'], apiRouter);
 
   // Catch-all for undefined routes
   app.all('*', (req, res, next) => {

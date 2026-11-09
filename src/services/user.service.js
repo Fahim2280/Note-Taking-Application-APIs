@@ -29,6 +29,41 @@ class UserService {
     return updatedUser;
   }
 
+  async createUser({ name, email, password, role = 'User', interests = [] }) {
+    if (!name || !email || !password) {
+      throw new AppError('Name, email and password are required', 400);
+    }
+    const existing = await this.userRepository.findByEmail(email);
+    if (existing) {
+      throw new AppError('User already exists with this email', 409);
+    }
+    const hashedPassword = await this.hashService.hash(password);
+    const formattedInterests = Array.isArray(interests)
+      ? interests.map((i) => i.trim().toLowerCase())
+      : [];
+    return this.userRepository.create({
+      name: name.trim(),
+      email: email.trim().toLowerCase(),
+      password: hashedPassword,
+      role: role === 'Admin' ? 'Admin' : 'User',
+      interests: formattedInterests
+    });
+  }
+
+  async updateUserAdmin(userId, { name, role, interests }) {
+    const updateData = {};
+    if (name) updateData.name = name.trim();
+    if (role && ['User', 'Admin'].includes(role)) updateData.role = role;
+    if (interests && Array.isArray(interests)) {
+      updateData.interests = interests.map((i) => i.trim().toLowerCase());
+    }
+    const updated = await this.userRepository.updateById(userId, updateData);
+    if (!updated) {
+      throw new AppError('User not found', 404);
+    }
+    return updated;
+  }
+
   async getAllUsers(query) {
     const { page, limit, skip } = parsePagination(query);
     return this.userRepository.findPaginated({ page, limit, skip });
